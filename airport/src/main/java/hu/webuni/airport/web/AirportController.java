@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -45,12 +46,10 @@ public class AirportController {
 	
 	@GetMapping("/{id}")
 	public AirportDto getById(@PathVariable long id) {
-		Airport airport = airportService.findById(id);
-
-		if(airport != null)
-			return airportMapper.airportToDto(airport);
-		else
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		Airport airport = airportService.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		
+		return airportMapper.airportToDto(airport);
 	}
 	
 	@PostMapping
@@ -58,23 +57,23 @@ public class AirportController {
 		Airport airport = airportService.save(airportMapper.dtoToAirport(airportDto));
 		return airportMapper.airportToDto(airport);
 	}
-//	
-//	@PutMapping("/{id}")
-//	public ResponseEntity<AirportDto> modifyAirport(@PathVariable long id, @RequestBody AirportDto airportDto) {
-//		if(!airports.containsKey(id)) {
-//			return ResponseEntity.notFound().build();
-//		}
-//		
-//		checkUniqueIata(airportDto.getIata());
-//		airportDto.setId(id);
-//		airports.put(id, airportDto);
-//		return ResponseEntity.ok(airportDto);
-//	}
-//	
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<AirportDto> modifyAirport(@PathVariable long id, @RequestBody AirportDto airportDto) {
+		Airport airport = airportMapper.dtoToAirport(airportDto);
+		airport.setId(id);
+		try {
+			AirportDto savedAirportDto = airportMapper.airportToDto(airportService.update(airport));
+			return ResponseEntity.ok(savedAirportDto);
+		}catch (NoSuchElementException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+	}
+	
 
-//
-//	@DeleteMapping("/{id}")
-//	public void deleteAirport(@PathVariable long id) {
-//		airports.remove(id);
-//	}
+
+	@DeleteMapping("/{id}")
+	public void deleteAirport(@PathVariable long id) {
+		airportService.delete(id);
+	}
 }
