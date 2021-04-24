@@ -38,7 +38,6 @@ public class AirportControllerIT {
 		assertThat(airportsAfter.get(airportsAfter.size()-1))
 			.usingRecursiveComparison()
 			.isEqualTo(newAirport);
-		
 	}
 
 	private void createAirport(AirportDto newAirport) {

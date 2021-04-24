@@ -26,7 +26,10 @@ import org.springframework.web.server.ResponseStatusException;
 import hu.webuni.airport.dto.AirportDto;
 import hu.webuni.airport.mapper.AirportMapper;
 import hu.webuni.airport.model.Airport;
+import hu.webuni.airport.model.LogEntry;
+import hu.webuni.airport.repository.LogEntryRepository;
 import hu.webuni.airport.service.AirportService;
+import hu.webuni.airport.service.LogEntryService;
 import hu.webuni.airport.service.NonUniqueIataException;
 
 @RestController
@@ -38,6 +41,7 @@ public class AirportController {
 	
 	@Autowired
 	AirportMapper airportMapper;
+	
 	
 	@GetMapping
 	public List<AirportDto> getAll(){
@@ -64,6 +68,7 @@ public class AirportController {
 		airport.setId(id);
 		try {
 			AirportDto savedAirportDto = airportMapper.airportToDto(airportService.update(airport));
+			
 			return ResponseEntity.ok(savedAirportDto);
 		}catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
