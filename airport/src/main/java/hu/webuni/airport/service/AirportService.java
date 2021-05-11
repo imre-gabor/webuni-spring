@@ -52,7 +52,7 @@ public class AirportService {
 			logEntryService.createLog(String.format("Airport modified with id %d new name is %s", 
 					airport.getId(), airport.getName()));
 			
-			callBackendSystem();
+//			callBackendSystem();
 			return airportRepository.save(airport);
 		}
 		else
