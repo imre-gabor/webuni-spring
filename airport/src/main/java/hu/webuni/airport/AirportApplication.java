@@ -24,6 +24,7 @@ public class AirportApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		//airportService.createFlight();
 		System.out.println(priceService.getFinalPrice(200));
 		System.out.println(priceService.getFinalPrice(20000));
 	}
