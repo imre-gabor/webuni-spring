@@ -1,16 +1,9 @@
 package hu.webuni.airport.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
