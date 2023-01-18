@@ -96,7 +96,7 @@
 						<path>
 							<groupId>org.hibernate</groupId>
 							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>5.4.30.Final</version>
+							<version>${hibernate.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
