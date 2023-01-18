@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -15,6 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import hu.webuni.airport.dto.AirportDto;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 public class AirportControllerIT {
 	
 	private static final String BASE_URI="/api/airports";
@@ -35,8 +37,9 @@ public class AirportControllerIT {
 			.usingRecursiveFieldByFieldElementComparator()
 			.containsExactlyElementsOf(airportsBefore);
 		
-		assertThat(airportsAfter.get(airportsAfter.size()-1))
+		assertThat(airportsAfter.get(airportsAfter.size()-1))		
 			.usingRecursiveComparison()
+			.ignoringFields("id")
 			.isEqualTo(newAirport);
 	}
 
