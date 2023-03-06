@@ -8,59 +8,56 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import hu.webuni.airport.security.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
+@EnableMethodSecurity
+public class SecurityConfig {
+
 	@Autowired
 	UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	JwtAuthFilter jwtAuthFilter;
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider());
-//		auth.inMemoryAuthentication()
-//			.passwordEncoder(passwordEncoder())
-//			.withUser("user").authorities("user").password(passwordEncoder().encode("pass"))
-//			.and()
-//			.withUser("admin").authorities("user", "admin").password(passwordEncoder().encode("pass"));
+	@Bean
+	public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+		AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		return authManagerBuilder.authenticationProvider(authenticationProvider()).build();
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 //			.httpBasic()
 //			.and()
-			.csrf().disable()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.authorizeRequests()
-			.antMatchers("/api/login/**").permitAll()
-			.antMatchers(HttpMethod.POST, "/api/airports/**").hasAuthority("admin")
-			.antMatchers(HttpMethod.PUT, "/api/airports/**").hasAnyAuthority("user", "admin")
-			.anyRequest().authenticated();
-		
+				.csrf().disable()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authorizeHttpRequests()
+				.requestMatchers("/api/login/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/airports/**").hasAuthority("admin")
+				.requestMatchers(HttpMethod.PUT, "/api/airports/**").hasAnyAuthority("user", "admin")
+				.anyRequest().authenticated();
+
 		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
 	}
 
 	@Bean
@@ -71,12 +68,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return daoAuthenticationProvider;
 	}
 
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
-	
-	
-	
 }
