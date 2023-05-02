@@ -12,9 +12,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -35,10 +37,31 @@ public class SecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
+	
+//	@Bean
+//	public UserDetailsService userDetailsService() {
+//	    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//	    manager.createUser(User.withUsername("user")
+//	      .password(passwordEncoder().encode("pass"))
+//	      .roles("user")
+//	      .build());
+//	    manager.createUser(User.withUsername("admin")
+//	      .password(passwordEncoder().encode("pass"))
+//	      .roles("user", "admin")
+//	      .build());
+//	    return manager;
+//	}
+	
 	@Bean
 	public AuthenticationManager authManager(HttpSecurity http) throws Exception {
 		AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+//		return authManagerBuilder
+//				.userDetailsService(userDetailsService())
+//				.passwordEncoder(passwordEncoder())
+//				.and()
+//				.build();
+
 		return authManagerBuilder.authenticationProvider(authenticationProvider()).build();
 	}
 
