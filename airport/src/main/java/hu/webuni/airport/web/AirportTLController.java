@@ -8,15 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import hu.webuni.airport.dto.AirportDto;
+import hu.webuni.airport.model.Airport;
 
 @Controller
 public class AirportTLController {
 	
-	private List<AirportDto> allAirports = new ArrayList<>();
+	private List<Airport> allAirports = new ArrayList<>();
 	
 	{
-		allAirports.add(new AirportDto(1, "Ferenc Liszt Airport", "BUD"));
+		allAirports.add(new Airport(1, "Ferenc Liszt Airport", "BUD"));
 	}
 
 	@GetMapping("/")
@@ -27,12 +27,12 @@ public class AirportTLController {
 	@GetMapping("/airports")
 	public String listAirports(Map<String, Object> model) {
 		model.put("airports", allAirports);
-		model.put("newAirport", new AirportDto());
+		model.put("newAirport", new Airport());
 		return "airports";
 	}
 	
 	@PostMapping("/airports")
-	public String addAirport(AirportDto airport) {
+	public String addAirport(Airport airport) {
 		allAirports.add(airport);
 		return "redirect:airports";
 	}

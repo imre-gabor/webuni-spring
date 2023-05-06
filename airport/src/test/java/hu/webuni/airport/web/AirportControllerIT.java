@@ -62,7 +62,7 @@ public class AirportControllerIT {
 			.returnResult().getResponseBody();
 		
 		
-		Collections.sort(responseList, (a1, a2) -> Long.compare(a1.getId(), a2.getId()));
+		Collections.sort(responseList, (a1, a2) -> Long.compare(a1.id(), a2.id()));
 		return responseList;
 	}
 
